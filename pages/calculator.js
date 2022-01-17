@@ -15,8 +15,8 @@ import { InputBox, InputCheckBox, BoxTextSmall, BodyContainer, Container, Box, B
 
 
 export default function Calculator() {
-  const [globalHash, setGlobalHash] = useState(111000);
-  const [dailyPool, setDailyPool] = useState(222000);
+  const [globalHash, setGlobalHash] = useState(121000);
+  const [dailyPool, setDailyPool] = useState(230000);
   const [userHash, setUserHash] = useState(55);
   const [userReward, setUserReward] = useState(0);
 
