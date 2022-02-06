@@ -2,13 +2,17 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Header from '../components/header'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import axios from "axios"
 import hashpower from '../public/hashpower64.png'
 import epw from '../public/epw2x.png'
 import usdc from '../public/usdcsvg.svg'
 import brlc from '../public/brlc.png'
 import px2vw from "../utils/px2vw"
+import Api from '../service/firebase'
+import { AuthContext } from "../contexts/AuthContext";
+
+
 import { EpwUsdPrice, EpwBrlPrice, UsdBrlPrice } from '../components/pricer'
 import { InputBox, InputCheckBox, BoxTextSmall, BodyContainer, Container, Box, BoxRow, BoxTitle, BoxContainer, BoxContainerColumn, FormContainer, BoxText, InputText, BackgroundContainer, FormContainerColumn, BoxDetails, BoxTitleBig } from "../styles/calculatorStyles";
 
@@ -19,8 +23,28 @@ export default function Calculator() {
   const [dailyPool, setDailyPool] = useState(230000);
   const [userHash, setUserHash] = useState(55);
   const [userReward, setUserReward] = useState(0);
+  const {user, setUser} = useContext(AuthContext)
 
+  const actionLoginDataGoogle = (u) => {
+    let newUser = {
+      id: u.uid,
+      name: u.displayName,
+      avatar: u.photoURL
+    }
 
+    setUser(newUser)
+    console.log(newUser)
+  }
+
+  const actionLoginGoogle = async () => {
+    let result = await Api.googleLogar()
+
+    if(result){
+      actionLoginDataGoogle(result.user)
+    }else{
+      alert(' error')
+    }
+  }
 
   const [investmentEpw, setInvestmentEpw] = useState(3000);
   const [investmentUsd, setInvestmentUsd] = useState(0);
@@ -140,7 +164,7 @@ export default function Calculator() {
       <Container>
         <BackgroundContainer>
           <BoxDetails>
-            <BoxTitleBig>EPW PRICE</BoxTitleBig>
+            <BoxTitleBig>EPW PRICE {user && user.name ? user.name : ""}</BoxTitleBig>
             <BoxTitle>{parseFloat(EpwUsdPrice()).toFixed(3)} USD</BoxTitle>
             <BoxTitle>{parseFloat(EpwBrlPrice()).toFixed(3)} BRL</BoxTitle>
             <BoxTitle>1.00 USD = {parseFloat(UsdBrlPrice()).toFixed(2)} BRL</BoxTitle>
